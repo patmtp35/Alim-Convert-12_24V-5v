@@ -33,7 +33,7 @@ Pack − ───────────────────────�
 | Convertisseur 24V/12V → 5V 5A | 63,15 × 27,30 × 12,80 mm. Entrée : bornier à vis + fiche ronde (espacés de 4,75 mm). Sortie : bornier à vis + prise USB (espacés de 1 mm). |
 | Porte-fusible 5×20 à souder, capot transparent | Capot transparent : 26,5 × 9,15 × 10,80 mm. Corps jaune : 23,33 × 10,0 × 6,30 mm. Hauteur totale annoncée : 16,90 mm. |
 | Boîtier | Rail DIN 3 modules, 54 mm de large |
-| Divers | 2 vis M3×6 (clip), 2 vis M3 (couvercle), époxy ou colle PU pour le capot |
+| Divers | 2 vis M3×5 tête fraisée (clip), 2 vis M3 (couvercle), époxy ou colle PU pour le capot |
 
 ### Photos du matériel
 

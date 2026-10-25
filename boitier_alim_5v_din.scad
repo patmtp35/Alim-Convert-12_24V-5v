@@ -113,8 +113,17 @@ module couvercle() {
   }
 }
 
-// Clip dans sa position de montage (z<0 = côté rail)
+// Clip dans sa position de montage (z<0 = côté rail), avec les trous de fixation
+// alignés sur ceux de la base (même variable clip_screws)
 module clip_mount() {
+  difference() {
+    clip_body();
+    // trous pour vis M3 autotaraudeuses (pré-trou 2,6 mm), traversent la plaque du clip
+    for (p=clip_screws) translate([p[0],p[1],-clip_t-0.01]) cylinder(d=2.6,h=clip_t+0.02,$fn=24);
+  }
+}
+
+module clip_body() {
   z0 = -clip_t;                  // plan de contact avec les ailes du rail
   zb = z0 - fl_t - 0.3;          // dessus de la lèvre (sous l'aile)
   zl = zb - 1.5;                 // bas de la lèvre
