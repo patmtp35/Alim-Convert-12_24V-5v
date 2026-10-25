@@ -34,7 +34,7 @@ Pack − ───────────────────────�
 
 ## Boîtier imprimé 3D
 
-Fichier : [`boitier_alim_5v_din.scad`](boitier_alim_5v_din.scad). Toutes les cotes sont des variables en tête de fichier. La variable `piece` choisit la pièce : `"base"`, `"couvercle"`, `"clip"` ou `"assemble"` (aperçu).
+Fichier : [`boitier_alim_5v_din.scad`](boitier_alim_5v_din.scad). Toutes les cotes sont des variables en tête de fichier. La variable `piece` choisit la pièce : `"plaque"` (défaut : les 3 pièces à plat sur un plateau 220 × 220, prêtes à exporter en un seul STL), `"base"`, `"couvercle"`, `"clip"` ou `"assemble"` (aperçu monté).
 
 Choix de conception :
 - Convertisseur monté debout (63,15 mm sur les 90 mm de hauteur), bornes aux deux extrémités.

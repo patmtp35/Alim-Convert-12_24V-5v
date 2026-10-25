@@ -1,6 +1,6 @@
 // Boîtier DIN 3 modules - alim 24V -> 5V + porte-fusible 5x20
-// Unités : mm. Choisir la pièce avec 'piece' : "base", "couvercle", "clip", "assemble"
-piece = "assemble";
+// Unités : mm. Choisir la pièce avec 'piece' : "plaque" (tout imprimer d'un coup), "base", "couvercle", "clip", "assemble"
+piece = "plaque";
 
 // ---------- Boîtier ----------
 W = 54;          // largeur (3 modules)
@@ -135,7 +135,18 @@ module clip_mount() {
 // Clip orienté pour l'impression (plaque à plat, crochets vers le haut)
 module clip() { rotate([180,0,0]) clip_mount(); }
 
-if (piece=="base") base();
-else if (piece=="couvercle") translate([0,0,Zb+lid_t]) rotate([180,0,0]) couvercle();
+// Couvercle retourné (face avant sur le plateau) pour l'impression
+module couvercle_print() translate([0,0,Zb+lid_t]) rotate([180,0,0]) couvercle();
+
+// Vue "plaque" : les 3 pièces à plat sur un plateau 220 x 220 (Ender 3 V3 KE)
+module plaque() {
+  translate([-32,0,0]) base();
+  translate([ 32,0,0]) couvercle_print();
+  translate([ -7,75,0]) clip();
+}
+
+if (piece=="plaque") plaque();
+else if (piece=="base") base();
+else if (piece=="couvercle") couvercle_print();
 else if (piece=="clip") clip();
 else { base(); couvercle(); color("orange") clip_mount(); }
