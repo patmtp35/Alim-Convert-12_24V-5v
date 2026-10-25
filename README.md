@@ -11,12 +11,12 @@ Contenu : un convertisseur DC-DC DollaTek « 24V/12V → 5V 5A » (entrée annon
 ![Schéma de connexion](docs/schema-connexion.svg)
 
 ```
-Pack + ──[ F1 : 5×20 · 1 A T · ≥ 32 V DC ]──[ D2 : Schottky, optionnelle ]──► IN+  convertisseur  OUT+ ──► +5 V
-Pack − ───────────────────────────────────────────────────────► IN−                  OUT− ──► GND
+Pack + ──[ F1 : 5×20 · 1 A T · ≥ 32 V DC ]──► IN+  convertisseur  OUT+ ──► +5 V
+Pack − ───────────────────────────────────► IN−                  OUT− ──► GND
 ```
 
 - Fusible sur le **+**, avant tout le reste, le plus près possible du pack.
-- Diode Schottky externe en série sur le + d'entrée, après le fusible (SS34 ou 1N5822, 40 V min) : **optionnelle**. L'annonce du convertisseur indique des diodes anti-inversion sur la carte (voir plus bas) ; la diode externe n'est utile que si D1 ne fait pas ce rôle. Chute ~0,4 V, sans importance sur une entrée 24 V.
+- **Pas de diode externe** : le convertisseur embarque sa propre diode anti-inversion (D1, annoncée par le vendeur). Si D1 n'est pas vérifiée au multimètre, le pire cas est un module de quelques euros détruit par une inversion de polarité ; F1 protège dans le cas d'une diode montée en parallèle inversée.
 - Le convertisseur a l'entrée d'un côté (bornier + prise jack) et la sortie de l'autre (bornier + USB-A). **Relever la polarité IN+/IN− et OUT+/OUT− sur la sérigraphie de la carte** avant de câbler (illisible sur la photo).
 
 ## Points de sécurité
