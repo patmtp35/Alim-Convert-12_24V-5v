@@ -1,7 +1,7 @@
 # Alim Convert 12/24V → 5V (rail DIN)
 
 Petite alimentation 5 V sur rail DIN, prise sur un pack batterie 12/24 V (off-grid solaire), pour alimenter des ESP32 / cartes 5 V.
-Contenu : un convertisseur DC-DC « 24V 12V → 5V 5A », un porte-fusible 5×20, le tout dans un boîtier imprimé 3D de 3 modules (54 mm).
+Contenu : un convertisseur DC-DC DollaTek « 24V/12V → 5V 5A » (entrée annoncée 9–36 V), un porte-fusible 5×20, le tout dans un boîtier imprimé 3D de 3 modules (54 mm).
 
 > **État : conception en cours, rien n'est encore imprimé ni testé.**
 > Le fichier OpenSCAD n'a **pas été rendu/compilé** par son auteur (pas de moteur OpenSCAD disponible lors de l'écriture). Ouvrir dans OpenSCAD, faire F6 et vérifier avant d'imprimer.
@@ -11,17 +11,17 @@ Contenu : un convertisseur DC-DC « 24V 12V → 5V 5A », un porte-fusible 5×20
 ![Schéma de connexion](docs/schema-connexion.svg)
 
 ```
-Pack + ──[ F1 : 5×20 · 1 A T · ≥ 32 V DC ]──[ D1 : Schottky ]──► IN+  convertisseur  OUT+ ──► +5 V
+Pack + ──[ F1 : 5×20 · 1 A T · ≥ 32 V DC ]──[ D2 : Schottky, optionnelle ]──► IN+  convertisseur  OUT+ ──► +5 V
 Pack − ───────────────────────────────────────────────────────► IN−                  OUT− ──► GND
 ```
 
 - Fusible sur le **+**, avant tout le reste, le plus près possible du pack.
-- Diode Schottky en série sur le + d'entrée, après le fusible (SS34 ou 1N5822, 40 V min) : protection contre l'inversion de polarité. Chute ~0,4 V, sans importance sur une entrée 24 V.
+- Diode Schottky externe en série sur le + d'entrée, après le fusible (SS34 ou 1N5822, 40 V min) : **optionnelle**. L'annonce du convertisseur indique des diodes anti-inversion sur la carte (voir plus bas) ; la diode externe n'est utile que si D1 ne fait pas ce rôle. Chute ~0,4 V, sans importance sur une entrée 24 V.
 - Le convertisseur a l'entrée d'un côté (bornier + prise jack) et la sortie de l'autre (bornier + USB-A). **Relever la polarité IN+/IN− et OUT+/OUT− sur la sérigraphie de la carte** avant de câbler (illisible sur la photo).
 
 ## Points de sécurité
 
-1. **Tension max du pack, pas « 24 V ».** Un pack 24 V monte vers ~29 V en absorption, davantage en égalisation (plomb). Beaucoup de modules « 24V/12V → 5V » bon marché ont une entrée limitée à 30–32 V. **Relever la plage d'entrée sur l'étiquette du module et la tension max du chargeur** : si la plage est inférieure, le module claquera et entraînera ce qu'il alimente.
+1. **Tension max du pack, pas « 24 V ».** Un pack 24 V monte vers ~29 V en absorption, davantage en égalisation (plomb). L'annonce du convertisseur donne une entrée de **9 à 36 V** (donnée du vendeur, non mesurée) : cela couvre 29 V avec ~7 V de marge, mais **relever la tension max réelle du chargeur** (égalisation comprise) et la comparer à 36 V. Au-delà, le module claquera et entraînera ce qu'il alimente.
 2. **Fusible DC.** Un fusible verre 5×20 sans mention DC peut faire un arc au lieu de couper sous 24 V. Prendre un modèle marqué **32 V DC minimum**, idéalement céramique. Calibre 1 A temporisé pour ~0,3 A de charge (deux ESP + carte).
 3. **Pas de protection sur le module.** Le convertisseur n'a ni fusible ni protection d'inversion de polarité : d'où la diode et le fusible ci-dessus.
 4. **Alimenter un SoyoSource (ou autre carte secteur) en 5 V : ne rien brancher avant mesure.** Les bornes 5 V de la carte peuvent être une entrée ou une sortie, et le sélecteur PWR (Ext / DIS) joue dessus. La mesure se fait secteur branché, donc sur une carte probablement non isolée : un seul multimètre, une main, sans toucher la carte. Deux sources 5 V en parallèle = conflit. Un onduleur grid-tie s'arrête sans secteur (anti-îlotage) : alimenter sa carte en 5 V ne le rend pas indépendant du 230 V.
@@ -40,8 +40,9 @@ Pack − ───────────────────────�
 ![Convertisseur et porte-fusible](docs/materiel.jpg)
 
 Observations sur la photo du convertisseur :
-- Condensateur d'entrée **100 µF 50 V**, condensateur de sortie **470 µF 16 V**, inductance 330 (33 µH), deux MOSFET (synchrone). Le condensateur 50 V ne prouve **pas** que l'entrée accepte 50 V : la puce de contrôle n'est pas lisible, la plage d'entrée reste à relever sur l'étiquette.
-- Une diode CMS (D1, marquage « SS5… » partiel) est soudée près de l'entrée, côté prise jack. C'est peut-être une protection d'inversion en série, mais ce n'est **pas vérifié** : le tester au multimètre (mode diode) avant de supprimer la diode externe. En attendant, la garder.
+- Annonce du vendeur (DollaTek, Amazon) : entrée **9–36 V**, sortie 5,0 V / 5 A, prise jack 5,5 × 2,1 mm, « anti-reverse protection diodes », contrôleur synchrone, puce de reconnaissance de charge rapide sur l'USB. Ces valeurs sont **celles du vendeur, non vérifiées**.
+- Condensateur d'entrée **100 µF 50 V**, condensateur de sortie **470 µF 16 V**, inductance 330 (33 µH), deux MOSFET (synchrone). Le 50 V est cohérent avec une entrée 36 V.
+- La diode CMS D1 (marquage « SS5… » partiel) près de l'entrée est celle que l'annonce désigne comme anti-inversion. Elle peut être **en série** (bloque l'inversion) ou **en parallèle inversée** (court-circuite une inversion, donc fait claquer F1) : le tester au multimètre (mode diode) pour le savoir. Dans les deux cas F1 en amont est indispensable.
 - Porte-fusible : les deux broches sortent aux **extrémités** du corps jaune, vers le bas, sur environ 2 mm ; la hauteur annoncée de 16,9 mm les inclut. Le corps jaune et le capot transparent se chevauchent en partie (ils ne s'empilent pas à 6,3 + 10,8 mm).
 
 ## Fusibles compatibles
@@ -85,7 +86,7 @@ Choix de conception :
 - Profondeur du boîtier (`D`, fixée à 45 mm depuis les ailes du rail) à ajuster à celle de l'appareil voisin.
 - Position exacte des bornes / prise USB / prise ronde dans l'axe X : le fichier prévoit une seule ouverture de 24 mm à chaque extrémité.
 - Plots de 3 mm sous le PCB : vérifier qu'aucun composant n'est sous la carte.
-- Plage d'entrée du convertisseur et tension max du chargeur (voir sécurité n° 1).
+- Tension max réelle du chargeur, égalisation comprise, à comparer aux 36 V annoncés (voir sécurité n° 1).
 - Résultat de la mesure des bornes 5 V du SoyoSource (voir sécurité n° 4).
 
 ## Licence
