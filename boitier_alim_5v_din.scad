@@ -6,7 +6,7 @@ piece = "plaque";
 W = 54;          // largeur (3 modules)
 H = 90;          // hauteur (axe vertical sur le rail)
 wall = 2;        // parois
-floor_t = 3;     // fond
+floor_t = 4;     // fond (4 mm : loge les écrous M3 du clip)
 lid_t = 2;       // couvercle
 clip_t = 4;      // épaisseur plaque du clip rail
 D = 45 - clip_t; // face avant à 45 mm du plan des ailes du rail (à ajuster au SoyoSource)
@@ -37,13 +37,29 @@ label_x = 0;  label_y = 25;   // zone libre, loin de la fenêtre du fusible (y d
 // ---------- Fixations ----------
 screw_pos = [[-21,-39],[21,39]];   // vis couvercle (diagonale)
 boss_z = 22;                       // début des bossages : au-dessus du convertisseur (haut à 18,8) et des câbles (19,5)
-clip_screws = [[7,-4],[7,12]];     // vis du clip
 
-// ---------- Clip rail 35 mm ----------
-rail_edge = 17.5;  fl_t = 1.0;  cl = 0.4;
-clip_x0 = -8;  clip_len = 30;
-
-module ext_x(len) rotate([90,0,90]) linear_extrude(len) children();
+// ---------- Clip rail 35 mm (repris du boîtier Esp32/eSmart3, testé en PLA) ----------
+tc   = 4;       // épaisseur plaque clip
+rail = 35;      // largeur rail
+rclr = 0.4;     // jeu rail (à régler si trop serré / lâche)
+stem = 2.4;     // épaisseur des montants
+lipL = 2.6;     // longueur des becs (recouvrement rail 2.2)
+brim_t = 1.0;   // épaisseur des bords du rail
+lip_gap = 0.5;  // jeu entre bord du rail et bec
+lip_t = 1.4;    // épaisseur des becs
+cw   = 44;      // largeur du clip (le long du rail)
+yc   = 20.5;    // centre du rail dans le repère du clip
+slot_w = 1.8;   // fente de la languette flexible
+arm_x0 = 8;     // début de la languette flexible
+zl = tc + brim_t + lip_gap;     // dessous du bec
+zt = zl + lip_t;                // dessus du bec
+y_bot_in = yc - rail/2 - rclr;  // face intérieure du montant bas
+y_top_in = yc + rail/2 + rclr;  // face intérieure du montant haut
+// vis du clip, repère du clip : décalées côté +X pour éviter le convertisseur
+clip_scr = [[34, 9.5], [34, 31.5]];
+// position du clip dans le repère du boîtier (centré sur la base, rail au milieu)
+clip_ox = -cw/2;  clip_oy = -yc;
+clip_scr_base = [for (p = clip_scr) [p[0]+clip_ox, p[1]+clip_oy]];   // = (12,-11) et (12,11)
 
 module base() {
   difference() {
@@ -74,11 +90,12 @@ module base() {
     for (p=screw_pos) translate([p[0],p[1],Zb-12]) cylinder(d=2.6,h=13,$fn=24);
     // ouvertures câbles / connecteurs aux 2 extrémités
     for (s=[-1,1]) translate([cv_x-cv_w/2+1.5, s*(H/2-wall/2)-wall, floor_t+1.5]) cube([cv_w-3,wall*2,15]);
-    // trous vis du clip (tête noyée côté intérieur)
-    for (p=clip_screws) {
-      translate([p[0],p[1],-1]) cylinder(d=3.4,h=floor_t+2,$fn=24);
-      translate([p[0],p[1],floor_t-1.7]) cylinder(d1=3.4,d2=6.2,h=1.71,$fn=24);
-    }
+    // vis du clip DIN : trou ø3,4 + logement d'écrou M3 côté cavité (comme sur le boîtier eSmart3)
+    for (p = clip_scr_base)
+      translate([p[0], p[1], 0]) {
+        translate([0,0,-1]) cylinder(d=3.4, h=floor_t+2, $fn=24);
+        translate([0,0,floor_t-2.6]) cylinder(d=6.7, h=2.7, $fn=6);
+      }
   }
 }
 
@@ -113,36 +130,52 @@ module couvercle() {
   }
 }
 
-// Clip dans sa position de montage (z<0 = côté rail), avec les trous de fixation
-// alignés sur ceux de la base (même variable clip_screws)
-module clip_mount() {
-  difference() {
-    clip_body();
-    // trous pour vis M3 autotaraudeuses (pré-trou 2,6 mm), traversent la plaque du clip
-    for (p=clip_screws) translate([p[0],p[1],-clip_t-0.01]) cylinder(d=2.6,h=clip_t+0.02,$fn=24);
-  }
+// =====================================================================
+// CLIP DIN (repère d'impression : face contre la base sur le plateau)
+// =====================================================================
+module lip(yin, dir, x0, len) {
+    pts = [[yin - dir*0.2, zl],
+           [yin + dir*lipL, zl],
+           [yin + dir*lipL, zl + 0.4],
+           [yin, zt],
+           [yin - dir*0.2, zt]];
+    translate([x0, 0, 0]) rotate([90, 0, 90]) linear_extrude(len) polygon(pts);
 }
 
-module clip_body() {
-  z0 = -clip_t;                  // plan de contact avec les ailes du rail
-  zb = z0 - fl_t - 0.3;          // dessus de la lèvre (sous l'aile)
-  zl = zb - 1.5;                 // bas de la lèvre
-  hy = rail_edge + cl;           // face intérieure du crochet
-  // plaque + crochet haut rigide
-  translate([clip_x0,0,0]) ext_x(clip_len)
-    polygon([[-16.4,z0],[hy,z0],[hy,zb],[hy-2.2,zb],[hy-0.7,zl],[hy+2,zl],[hy+2,0],[-16.4,0]]);
-  // bas : lame flexible parallèle au rail (flexion en Y), lèvre à l'extrémité libre
-  translate([clip_x0,0,0]) {
-    translate([0,-19.5,-4]) cube([6,4.5,4]);                       // pied de la lame
-    translate([5,-19.5,zl]) cube([clip_len-5,1.6,-0.4-zl]);        // lame
-    translate([clip_len-8,0,0]) ext_x(8)                            // lèvre
-      polygon([[-hy-0.2,zb],[-hy+2.2,zb],[-hy+0.7,zl],[-hy-0.2,zl]]);
-    translate([clip_len-4,-24,zl]) cube([4,4.6,4]);                // poignée de déverrouillage
-  }
+module clip() {
+    y_body0 = y_bot_in + slot_w;               // début de la plaque principale
+    y_body1 = y_top_in + stem + 0.2;           // fin de la plaque principale
+    difference() {
+        union() {
+            // plaque principale
+            translate([0, y_body0, 0]) cube([cw, y_body1 - y_body0, tc]);
+            // base de la languette flexible (côté gauche, reliée à la plaque)
+            translate([0, y_bot_in - stem, 0]) cube([arm_x0, stem + slot_w + 0.01, tc]);
+            // languette flexible (fléchit dans le plan, vers le bas)
+            translate([arm_x0 - 0.01, y_bot_in - stem, 0]) cube([cw - arm_x0 + 0.01, stem, tc]);
+            // montant + bec bas (sur la languette)
+            translate([24, y_bot_in - stem, tc - 0.01]) cube([12, stem, zt - tc + 0.01]);
+            lip(y_bot_in, 1, 24, 12);
+            // montant + bec haut (fixe)
+            translate([6, y_top_in, tc - 0.01]) cube([32, stem, zt - tc + 0.01]);
+            lip(y_top_in, -1, 6, 32);
+            // languette de manoeuvre jusqu'au bord bas du boîtier (tournevis)
+            translate([cw - 8, -(H - 41)/2 + 0.2, 0])
+                cube([8, y_bot_in + (H - 41)/2 - 0.2 + 0.01, tc]);
+        }
+        // trou de tournevis dans la languette de manoeuvre
+        translate([cw - 4, -(H - 41)/2 + 5.5, -1]) cylinder(d = 4, h = tc + 2);
+        // vis M3 fraisées (côté rail)
+        for (p = clip_scr)
+            translate([p[0], p[1], 0]) {
+                translate([0, 0, -1]) cylinder(d = 3.4, h = tc + 2);
+                translate([0, 0, tc - 1.7]) cylinder(d1 = 3.4, d2 = 6.6, h = 1.71);
+            }
+    }
 }
 
-// Clip orienté pour l'impression (plaque à plat, crochets vers le haut)
-module clip() { rotate([180,0,0]) clip_mount(); }
+// Clip dans sa position de montage (derrière la base : z < 0)
+module clip_mount() mirror([0,0,1]) translate([clip_ox, clip_oy, 0]) clip();
 
 // Couvercle retourné (face avant sur le plateau) pour l'impression
 module couvercle_print() translate([0,0,Zb+lid_t]) rotate([180,0,0]) couvercle();
@@ -151,7 +184,7 @@ module couvercle_print() translate([0,0,Zb+lid_t]) rotate([180,0,0]) couvercle()
 module plaque() {
   translate([-32,0,0]) base();
   translate([ 32,0,0]) couvercle_print();
-  translate([ -7,75,0]) clip();
+  translate([-cw/2, H/2 + 10 + (H-41)/2, 0]) clip();   // clip à 10 mm au-dessus de la base
 }
 
 if (piece=="plaque") plaque();

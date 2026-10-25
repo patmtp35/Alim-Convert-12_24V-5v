@@ -33,7 +33,7 @@ Pack − ───────────────────────�
 | Convertisseur 24V/12V → 5V 5A | 63,15 × 27,30 × 12,80 mm. Entrée : bornier à vis + fiche ronde (espacés de 4,75 mm). Sortie : bornier à vis + prise USB (espacés de 1 mm). |
 | Porte-fusible 5×20 à souder, capot transparent | Capot transparent : 26,5 × 9,15 × 10,80 mm. Corps jaune : 23,33 × 10,0 × 6,30 mm. Hauteur totale annoncée : 16,90 mm. |
 | Boîtier | Rail DIN 3 modules, 54 mm de large |
-| Divers | 2 vis M3×5 tête fraisée (clip), 2 vis M3 (couvercle), époxy ou colle PU pour le capot |
+| Divers | 2 vis M3×10 tête fraisée + 2 écrous M3 (clip), 2 vis M3 (couvercle), époxy ou colle PU pour le capot |
 
 ### Photos du matériel
 
@@ -71,7 +71,7 @@ Choix de conception :
 - Convertisseur monté debout (63,15 mm sur les 90 mm de hauteur), bornes aux deux extrémités.
 - Porte-fusible **inséré par dessous** dans le couvercle : fenêtre haute aux cotes du capot transparent, logement bas élargi pour le corps jaune, épaulement de 0,4 mm entre les deux. Le capot est **collé** dans la fenêtre (époxy ou PU ; le cyanoacrylate tient mal sur le PETG, poncer légèrement avant de coller).
 - Bossages de vis du couvercle démarrant à 22 mm du fond (variable `boss_z`) pour ne pas gêner le convertisseur ni les câbles.
-- Clip rail 35 mm : crochet haut rigide, lame flexible en bas. **Imprimer d'abord le clip seul** et l'essayer sur le rail avant de lancer le reste.
+- Clip rail 35 mm : **repris du boîtier Esp32/eSmart3** (languette flexible, becs, languette de manœuvre au tournevis), déjà imprimé et validé en PLA ; seul le décalage des vis (côté +X, pour éviter le convertisseur) change. Fond de 4 mm avec logements d'écrous M3. Le jeu du rail est le paramètre `rclr`.
 - Gravure du couvercle : `Convert 24/12 => 5V`.
 
 ### Paramètres Creality Print (Ender 3 V3 KE)
