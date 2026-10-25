@@ -74,6 +74,10 @@ Choix de conception :
 - Clip rail 35 mm : **repris du boîtier Esp32/eSmart3** (languette flexible, becs, languette de manœuvre au tournevis), déjà imprimé et validé en PLA ; seul le décalage des vis (côté +X, pour éviter le convertisseur) change. Fond de 4 mm avec logements d'écrous M3. Le jeu du rail est le paramètre `rclr`.
 - Gravure du couvercle : `Convert 24/12 => 5V`.
 
+### Fichier STL prêt à trancher
+
+[`stl/boitier_alim_5v_din_v3.stl`](stl/boitier_alim_5v_din_v3.stl) : la vue plaque exportée depuis OpenSCAD (base, couvercle, clip), environ 118 × 166 × 39 mm, tient sur le plateau 220 × 220 de l'Ender 3 V3 KE. Pour tester seulement le clip, exporter `piece = "clip"`.
+
 ### Paramètres Creality Print (Ender 3 V3 KE)
 - PETG (proximité du convertisseur, collage). Buse 230–240 °C, plateau 70–80 °C.
 - Couche 0,2 mm, 3 parois, remplissage 20 % gyroid, sans supports.
