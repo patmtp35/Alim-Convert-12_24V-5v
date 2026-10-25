@@ -8,13 +8,16 @@ Contenu : un convertisseur DC-DC « 24V 12V → 5V 5A », un porte-fusible 5×20
 
 ## Schéma de câblage (à valider avant mise sous tension)
 
+![Schéma de connexion](docs/schema-connexion.svg)
+
 ```
-Pack + ──[ Fusible 1 A temporisé, DC ≥ 32 V ]──[ Diode Schottky ]──► IN+  convertisseur ──► OUT+ 5 V
-Pack − ─────────────────────────────────────────────────────────► IN−                  ──► OUT− GND
+Pack + ──[ F1 : 5×20 · 1 A T · ≥ 32 V DC ]──[ D1 : Schottky ]──► IN+  convertisseur  OUT+ ──► +5 V
+Pack − ───────────────────────────────────────────────────────► IN−                  OUT− ──► GND
 ```
 
 - Fusible sur le **+**, avant tout le reste, le plus près possible du pack.
 - Diode Schottky en série sur le + d'entrée, après le fusible (SS34 ou 1N5822, 40 V min) : protection contre l'inversion de polarité. Chute ~0,4 V, sans importance sur une entrée 24 V.
+- Le convertisseur a l'entrée d'un côté (bornier + prise jack) et la sortie de l'autre (bornier + USB-A). **Relever la polarité IN+/IN− et OUT+/OUT− sur la sérigraphie de la carte** avant de câbler (illisible sur la photo).
 
 ## Points de sécurité
 
@@ -31,6 +34,33 @@ Pack − ───────────────────────�
 | Porte-fusible 5×20 à souder, capot transparent | Capot transparent : 26,5 × 9,15 × 10,80 mm. Corps jaune : 23,33 × 10,0 × 6,30 mm. Hauteur totale annoncée : 16,90 mm. |
 | Boîtier | Rail DIN 3 modules, 54 mm de large |
 | Divers | 2 vis M3×6 (clip), 2 vis M3 (couvercle), époxy ou colle PU pour le capot |
+
+### Photos du matériel
+
+![Convertisseur et porte-fusible](docs/materiel.jpg)
+
+Observations sur la photo du convertisseur :
+- Condensateur d'entrée **100 µF 50 V**, condensateur de sortie **470 µF 16 V**, inductance 330 (33 µH), deux MOSFET (synchrone). Le condensateur 50 V ne prouve **pas** que l'entrée accepte 50 V : la puce de contrôle n'est pas lisible, la plage d'entrée reste à relever sur l'étiquette.
+- Une diode CMS (D1, marquage « SS5… » partiel) est soudée près de l'entrée, côté prise jack. C'est peut-être une protection d'inversion en série, mais ce n'est **pas vérifié** : le tester au multimètre (mode diode) avant de supprimer la diode externe. En attendant, la garder.
+- Porte-fusible : les deux broches sortent aux **extrémités** du corps jaune, vers le bas, sur environ 2 mm ; la hauteur annoncée de 16,9 mm les inclut. Le corps jaune et le capot transparent se chevauchent en partie (ils ne s'empilent pas à 6,3 + 10,8 mm).
+
+## Fusibles compatibles
+
+Critères pour F1 (porte-fusible 5×20 mm) :
+
+| Critère | Valeur | Pourquoi |
+|---|---|---|
+| Format | 5×20 mm | Taille du porte-fusible |
+| Calibre | **1 A** | Charge ≈ 0,3 A côté 24 V, marge pour le courant d'appel des condensateurs |
+| Type | **T (temporisé)** | Évite de claquer à la mise sous tension |
+| Tension **DC** | **≥ 32 V DC** (idéal ≥ 63 V DC) | Un pack 24 V monte à ~29 V, davantage en égalisation. Le « 250 V » imprimé sur la plupart des fusibles est une tension **AC** : la valeur DC est plus basse et se lit dans la fiche constructeur |
+| Pouvoir de coupure | **H (1500 A)**, corps **céramique** | Un pack batterie peut débiter des centaines à des milliers d'ampères en court-circuit ; un fusible verre « L » (35 A) risque l'arc au lieu de couper. Sur un fusible 5×20, la lettre L / E / H dans le marquage (ex. « T1A **H** 250V ») donne le pouvoir de coupure |
+
+Candidat à vérifier : **Eaton / Bussmann S505-1-R** (5×20, 1 A, temporisé, corps céramique, pouvoir de coupure 1500 A en AC, 250 V AC d'après [la fiche](https://www.alldatasheet.net/html-pdf/535493/COOPER/S505-1-R/217/1/S505-1-R.html)). **La tension et le pouvoir de coupure en DC ne figurent pas dans la page consultée : les confirmer sur la fiche constructeur avant achat.** Aucune référence n'est ici validée pour du 24 V DC.
+
+À éviter : fusible verre sans mention DC, fusible rapide (F), calibre supérieur à 2 A (le fil et le convertisseur ne seraient plus protégés).
+
+Le porte-fusible lui-même a une tension et un courant nominaux (marquage à relever sur le corps) : vérifier qu'ils couvrent 32 V DC. Le fil entre le pack et ce boîtier doit être protégé à la source par son propre fusible.
 
 ## Boîtier imprimé 3D
 

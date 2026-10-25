@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Arial, Helvetica, sans-serif">
+  <rect width="900" height="420" fill="#ffffff"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/></marker>
+  </defs>
+  <text x="450" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">Alim 5 V sur rail DIN — schéma de connexion</text>
+
+  <!-- Pack -->
+  <rect x="30" y="120" width="130" height="190" rx="8" fill="#eef3f8" stroke="#34495e" stroke-width="2"/>
+  <text x="95" y="200" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Pack batterie</text>
+  <text x="95" y="222" text-anchor="middle" font-size="14" fill="#222">12 / 24 V</text>
+  <text x="95" y="244" text-anchor="middle" font-size="12" fill="#555">(fusible général</text>
+  <text x="95" y="260" text-anchor="middle" font-size="12" fill="#555">au plus près du pack)</text>
+  <text x="148" y="140" text-anchor="end" font-size="18" font-weight="bold" fill="#c0392b">+</text>
+  <text x="150" y="292" text-anchor="end" font-size="18" font-weight="bold" fill="#222">−</text>
+
+  <!-- Ligne + -->
+  <line x1="160" y1="148" x2="215" y2="148" stroke="#c0392b" stroke-width="3"/>
+  <!-- Fusible -->
+  <rect x="215" y="130" width="130" height="36" rx="4" fill="#fff8e1" stroke="#b9770e" stroke-width="2"/>
+  <text x="280" y="153" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">Fusible F1</text>
+  <text x="280" y="186" text-anchor="middle" font-size="12" fill="#222">5×20 · 1 A · T (temporisé)</text>
+  <text x="280" y="202" text-anchor="middle" font-size="12" fill="#222">≥ 32 V DC · céramique · H</text>
+  <line x1="345" y1="148" x2="400" y2="148" stroke="#c0392b" stroke-width="3"/>
+  <!-- Diode -->
+  <polygon points="400,132 400,164 430,148" fill="#fff" stroke="#222" stroke-width="2"/>
+  <line x1="430" y1="130" x2="430" y2="166" stroke="#222" stroke-width="3"/>
+  <text x="415" y="120" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">D1</text>
+  <text x="415" y="186" text-anchor="middle" font-size="12" fill="#222">Schottky SS34 /</text>
+  <text x="415" y="202" text-anchor="middle" font-size="12" fill="#222">1N5822 (≥ 40 V)</text>
+  <text x="415" y="218" text-anchor="middle" font-size="11" fill="#555">anti-inversion</text>
+  <line x1="430" y1="148" x2="520" y2="148" stroke="#c0392b" stroke-width="3"/>
+
+  <!-- Convertisseur -->
+  <rect x="520" y="110" width="170" height="210" rx="8" fill="#e8f1fb" stroke="#1f4e8c" stroke-width="2"/>
+  <text x="605" y="190" text-anchor="middle" font-size="14" font-weight="bold" fill="#222">Convertisseur</text>
+  <text x="605" y="208" text-anchor="middle" font-size="12" fill="#222">DC-DC → 5 V 5 A</text>
+  <text x="528" y="153" font-size="12" font-weight="bold" fill="#222">IN+</text>
+  <text x="528" y="293" font-size="12" font-weight="bold" fill="#222">IN−</text>
+  <text x="682" y="153" text-anchor="end" font-size="12" font-weight="bold" fill="#222">OUT+</text>
+  <text x="682" y="293" text-anchor="end" font-size="12" font-weight="bold" fill="#222">OUT−</text>
+  <text x="605" y="236" text-anchor="middle" font-size="12" fill="#555">entrée : bornier + jack</text>
+  <text x="605" y="254" text-anchor="middle" font-size="12" fill="#555">sortie : bornier + USB-A</text>
+
+  <!-- Ligne - (retour) -->
+  <line x1="160" y1="288" x2="520" y2="288" stroke="#222" stroke-width="3"/>
+  <line x1="690" y1="288" x2="760" y2="288" stroke="#222" stroke-width="3"/>
+  <line x1="690" y1="148" x2="760" y2="148" stroke="#c0392b" stroke-width="3"/>
+
+  <!-- Charges -->
+  <rect x="760" y="120" width="110" height="190" rx="8" fill="#eef8ee" stroke="#2e7d32" stroke-width="2"/>
+  <text x="815" y="185" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">Charges 5 V</text>
+  <text x="815" y="208" text-anchor="middle" font-size="12" fill="#222">ESP32,</text>
+  <text x="815" y="224" text-anchor="middle" font-size="12" fill="#222">cartes RS485…</text>
+  <text x="815" y="246" text-anchor="middle" font-size="12" fill="#555">≈ 0,3 A côté 24 V</text>
+  <text x="768" y="140" font-size="14" font-weight="bold" fill="#c0392b">+5 V</text>
+  <text x="768" y="283" font-size="14" font-weight="bold" fill="#222">GND</text>
+
+  <!-- Notes -->
+  <rect x="30" y="335" width="840" height="64" rx="6" fill="#fdecea" stroke="#c0392b" stroke-width="1.5"/>
+  <text x="44" y="356" font-size="13" fill="#222">Le fusible va sur le <tspan font-weight="bold">+</tspan>, avant la diode et le convertisseur. Ne rien relier à la borne 5 V d'une carte SoyoSource</text>
+  <text x="44" y="374" font-size="13" fill="#222">avant d'avoir mesuré si c'est une entrée ou une sortie (sélecteur Ext / DIS). Vérifier que la tension max du pack (≈ 29 V en absorption)</text>
+  <text x="44" y="392" font-size="13" fill="#222">est inférieure à la plage d'entrée du convertisseur.</text>
+</svg>
